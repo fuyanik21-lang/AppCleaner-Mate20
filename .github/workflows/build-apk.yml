@@ -49,10 +49,17 @@ jobs:
           python3 ci/storage_patch_v11_part2a.py AppCleaner-Mate20-TAM-PROJE
           python3 ci/storage_patch_v11_part2b.py AppCleaner-Mate20-TAM-PROJE
 
-      - name: Patch Compose imports
+      - name: Patch build compatibility and test message
         run: |
           sed -i '/import androidx.compose.foundation.layout.weight/d' AppCleaner-Mate20-TAM-PROJE/app/src/main/java/com/personal/appcleaner/ui/screens/CleanScreen.kt
           sed -i '/import androidx.compose.foundation.layout.weight/d' AppCleaner-Mate20-TAM-PROJE/app/src/main/java/com/personal/appcleaner/ui/screens/SettingsScreen.kt
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path('AppCleaner-Mate20-TAM-PROJE/app/src/main/java/com/personal/appcleaner/model/StopResult.kt')
+          s = p.read_text(encoding='utf-8')
+          s = s.replace('Shizuku izni verilmedi.', 'Shizuku için izin verilmedi.')
+          p.write_text(s, encoding='utf-8')
+          PY
 
       - name: Test and build APKs
         run: gradle -p AppCleaner-Mate20-TAM-PROJE --no-daemon clean testDebugUnitTest assembleDebug assembleRelease --stacktrace
