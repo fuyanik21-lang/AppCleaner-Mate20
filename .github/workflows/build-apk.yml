@@ -5,7 +5,8 @@ on:
   push:
     branches: [ "main" ]
     paths:
-      - "AppCleaner-Huawei-Mate20.zip"
+      - "AppCleaner-Mate20-TAM-PROJE.zip"
+      - ".github/workflows/build-apk.yml"
 
 permissions:
   contents: read
@@ -39,14 +40,14 @@ jobs:
           gradle-version: '8.13'
 
       - name: Extract project
-        run: unzip -q AppCleaner-Huawei-Mate20.zip
+        run: unzip -q AppCleaner-Mate20-TAM-PROJE.zip
 
       - name: Build debug APK
-        run: gradle -p AppCleaner --no-daemon clean assembleDebug --stacktrace
+        run: gradle -p AppCleaner-Mate20-TAM-PROJE --no-daemon clean assembleDebug --stacktrace
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: AppCleaner-Huawei-Mate20-debug
-          path: AppCleaner/app/build/outputs/apk/debug/app-debug.apk
+          path: AppCleaner-Mate20-TAM-PROJE/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
