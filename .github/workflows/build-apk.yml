@@ -6,6 +6,7 @@ on:
     branches: [ "main" ]
     paths:
       - "AppCleaner-Mate20-TAM-PROJE.zip"
+      - "ci/**"
       - ".github/workflows/build-apk.yml"
 
 permissions:
@@ -42,17 +43,30 @@ jobs:
       - name: Extract project
         run: unzip -q AppCleaner-Mate20-TAM-PROJE.zip
 
+      - name: Apply storage cleaner v1.1
+        run: |
+          python3 ci/storage_patch_v11_part1.py AppCleaner-Mate20-TAM-PROJE
+          python3 ci/storage_patch_v11_part2a.py AppCleaner-Mate20-TAM-PROJE
+          python3 ci/storage_patch_v11_part2b.py AppCleaner-Mate20-TAM-PROJE
+
       - name: Patch Compose imports
         run: |
           sed -i '/import androidx.compose.foundation.layout.weight/d' AppCleaner-Mate20-TAM-PROJE/app/src/main/java/com/personal/appcleaner/ui/screens/CleanScreen.kt
           sed -i '/import androidx.compose.foundation.layout.weight/d' AppCleaner-Mate20-TAM-PROJE/app/src/main/java/com/personal/appcleaner/ui/screens/SettingsScreen.kt
 
-      - name: Build debug APK
-        run: gradle -p AppCleaner-Mate20-TAM-PROJE --no-daemon clean assembleDebug --stacktrace
+      - name: Test and build APKs
+        run: gradle -p AppCleaner-Mate20-TAM-PROJE --no-daemon clean testDebugUnitTest assembleDebug assembleRelease --stacktrace
 
-      - name: Upload APK
+      - name: Upload debug APK
         uses: actions/upload-artifact@v4
         with:
-          name: AppCleaner-Huawei-Mate20-debug
+          name: AppCleaner-Huawei-Mate20-v1.1-debug
           path: AppCleaner-Mate20-TAM-PROJE/app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
+
+      - name: Upload release APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: AppCleaner-Huawei-Mate20-v1.1-release
+          path: AppCleaner-Mate20-TAM-PROJE/app/build/outputs/apk/release/app-release.apk
           if-no-files-found: error
