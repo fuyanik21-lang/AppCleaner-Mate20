@@ -28,8 +28,9 @@ jobs:
       - name: Rebuild AutoClose project archive
         shell: bash
         run: |
-          cat autoclose_payload/part_* > AutoCloseProject.b64
+          cat autoclose_payload/part_00 autoclose_payload/part_01 autoclose_payload/part_02 autoclose_payload/part_03 autoclose_payload/part_040 autoclose_payload/part_041 autoclose_payload/part_042 autoclose_payload/part_043 autoclose_payload/part_05 > AutoCloseProject.b64
           base64 -d AutoCloseProject.b64 > AutoCloseProject.zip
+          unzip -t AutoCloseProject.zip
           unzip -q AutoCloseProject.zip
           test -f AppCleaner-Mate20-TAM-PROJE/app/build.gradle.kts
 
