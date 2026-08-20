@@ -55,7 +55,24 @@ jobs:
           gradle-version: '8.13'
 
       - name: Test and build unsigned release APK
-        run: gradle -p AppCleaner-Mate20-TAM-PROJE --no-daemon clean testDebugUnitTest assembleRelease --stacktrace
+        id: gradle_build
+        continue-on-error: true
+        shell: bash
+        run: |
+          set -o pipefail
+          gradle -p AppCleaner-Mate20-TAM-PROJE --no-daemon clean testDebugUnitTest assembleRelease --stacktrace 2>&1 | tee autoclose-build.log
+
+      - name: Upload build log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: AutoClose-build-log
+          path: autoclose-build.log
+          if-no-files-found: warn
+
+      - name: Fail if Gradle failed
+        if: steps.gradle_build.outcome == 'failure'
+        run: exit 1
 
       - name: Verify output
         shell: bash
