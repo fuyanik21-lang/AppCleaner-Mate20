@@ -7,6 +7,11 @@ on:
     paths:
       - "AppCleaner-Mate20-TAM-PROJE.zip"
       - ".github/workflows/build-apk.yml"
+  pull_request:
+    branches: [ "main" ]
+    paths:
+      - "AppCleaner-Mate20-TAM-PROJE.zip"
+      - ".github/workflows/build-apk.yml"
 
 permissions:
   contents: read
