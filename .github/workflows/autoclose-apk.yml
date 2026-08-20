@@ -6,6 +6,11 @@ on:
     paths:
       - "autoclose_payload/**"
       - ".github/workflows/autoclose-apk.yml"
+  pull_request:
+    branches: [ "main" ]
+    paths:
+      - "autoclose_payload/**"
+      - ".github/workflows/autoclose-apk.yml"
   workflow_dispatch:
 
 permissions:
