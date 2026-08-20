@@ -5,7 +5,12 @@ on:
   push:
     branches: [ "main" ]
     paths:
-      - "AppCleaner-Mate20-TAM-PROJE.zip"
+      - "ci/autoclose_zip_parts/**"
+      - ".github/workflows/build-apk.yml"
+  pull_request:
+    branches: [ "main" ]
+    paths:
+      - "ci/autoclose_zip_parts/**"
       - ".github/workflows/build-apk.yml"
 
 permissions:
@@ -39,8 +44,11 @@ jobs:
         with:
           gradle-version: '8.13'
 
-      - name: Extract AutoClose project
-        run: unzip -q AppCleaner-Mate20-TAM-PROJE.zip
+      - name: Reconstruct and verify AutoClose project
+        run: |
+          cat ci/autoclose_zip_parts/*.txt | base64 --decode > /tmp/autoclose-project.zip
+          unzip -t /tmp/autoclose-project.zip
+          unzip -q /tmp/autoclose-project.zip
 
       - name: Test and build unsigned release APK
         run: gradle -p AppCleaner-Mate20-TAM-PROJE --no-daemon clean testDebugUnitTest assembleRelease --stacktrace
