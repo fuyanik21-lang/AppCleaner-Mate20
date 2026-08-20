@@ -59,3 +59,5 @@ jobs:
           name: AutoClose-v1.2-active-unsigned
           path: AppCleaner-Mate20-TAM-PROJE/app/build/outputs/apk/release/app-release-unsigned.apk
           if-no-files-found: error
+
+# rebuild after project archive integrity repair
